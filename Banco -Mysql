@@ -1,36 +1,47 @@
 Banco qr
 
-- phpMyAdmin SQL Dump
--- version 5.0.4
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Tempo de geração: 15-Mar-2022 às 11:48
--- Versão do servidor: 10.3.16-MariaDB
--- versão do PHP: 7.3.7
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Banco de dados: `qr`
---
-
+--- --------------------------------------------------------
+-- Servidor:                     127.0.0.1
+-- Versão do servidor:           10.4.27-MariaDB - mariadb.org binary distribution
+-- OS do Servidor:               Win64
+-- HeidiSQL Versão:              12.4.0.6659
 -- --------------------------------------------------------
 
---
--- Estrutura da tabela `certificados`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE TABLE `certificados` (
-  `id` int(20) NOT NULL,
+
+-- Copiando estrutura do banco de dados para qr
+DROP DATABASE IF EXISTS `qr`;
+CREATE DATABASE IF NOT EXISTS `qr` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `qr`;
+
+-- Copiando estrutura para tabela qr.aluno
+DROP TABLE IF EXISTS `aluno`;
+CREATE TABLE IF NOT EXISTS `aluno` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `cpf` varchar(14) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `telefone` varchar(20) NOT NULL,
+  `curso` varchar(100) NOT NULL,
+  `universidade` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpf` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Copiando dados para a tabela qr.aluno: ~0 rows (aproximadamente)
+
+-- Copiando estrutura para tabela qr.certificados
+DROP TABLE IF EXISTS `certificados`;
+CREATE TABLE IF NOT EXISTS `certificados` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `aluno` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `telefone` varchar(25) NOT NULL,
@@ -38,50 +49,41 @@ CREATE TABLE `certificados` (
   `palestra` varchar(100) NOT NULL,
   `palestrante` varchar(100) NOT NULL,
   `universidade` varchar(100) NOT NULL,
-  `data` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `data` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Índices para tabelas despejadas
---
+-- Copiando dados para a tabela qr.certificados: ~0 rows (aproximadamente)
 
---
--- Índices para tabela `certificados`
---
-ALTER TABLE `certificados`
-  ADD PRIMARY KEY (`id`);
+-- Copiando estrutura para tabela qr.palestrante
+DROP TABLE IF EXISTS `palestrante`;
+CREATE TABLE IF NOT EXISTS `palestrante` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `telefone` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- AUTO_INCREMENT de tabelas despejadas
---
+-- Copiando dados para a tabela qr.palestrante: ~0 rows (aproximadamente)
 
---
--- AUTO_INCREMENT de tabela `certificados`
---
-ALTER TABLE `certificados`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
-COMMIT;
+-- Copiando estrutura para tabela qr.users
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Copiando dados para a tabela qr.users: ~2 rows (aproximadamente)
+REPLACE INTO `users` (`id`, `user_name`, `password`, `name`) VALUES
+	(1, 'pedrorsvalle@gmail.com', '202cb962ac59075b964b07152d234b70', 'Pedro Rodrigues Santos Valle'),
+	(2, 'pedrorsvalle@hotmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Pedro Rodrigues Santos Valle');
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
----------------------------------------------------------------------
-
-CREATE TABLE `users` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`user_name` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',
-	`password` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',
-	`name` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',
-	PRIMARY KEY (`id`) USING BTREE
-)
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=75
-;
-
----------------------------------------------------------------------
-
-
-
-
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
