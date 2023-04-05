@@ -1,0 +1,137 @@
+<?php
+
+include "connection.php";
+
+class Query
+{
+    public static function cadastrarAluno($request){
+       
+        if($request->aluno &&
+        $request->cpf&&
+        $request->email &&
+        $request->telefone&&
+        $request->curso&&
+        $request->universidade){
+
+        }  
+    }
+    public static function cadastrarPalestrante($request) //cadastra o nome certificado no banco de dados
+    {
+        {
+            if($request->palestrante)  {
+
+            }
+        }
+
+    }
+
+    public static function cadastrarCertificado($request) //cadastra o nome certificado no banco de dados
+    {
+        if($request->aluno &&
+         $request->email &&
+          $request->telefone &&
+           $request->curso &&
+            $request->palestra &&
+             $request->palestrante &&
+              $request->universidade &&
+               $request->data && 
+                $request->cpf) // verifica se foi passado todo os valores 
+        {
+            // verifica se já existe um certificado com o mesmo email na palestra x
+            $pdo = PDOConnection::Connect(); //Abre conexão
+            $query_verifEmail = "SELECT email FROM certificados WHERE email = :email AND palestra = :palestra "; //aqui fica a query que será usada para verificar se o email já possui algum certificado.
+            $stmt = $pdo->prepare($query_verifEmail); //prepara a query para ser usada
+            $stmt->bindValue(":email", $request->email); // Vai substituir o valor:email pela o da variavel $request->email
+            $stmt->bindValue(":palestra", $request->palestra); //vai substituir o valor: palestra para o da variavel $request ->palestra
+            $stmt->execute(); //executa a query
+            $result_query_verifEmail = $stmt->fetchAll(); //transforma as informações em array e armazena na  $result_query_verifEmail
+
+            if(count($result_query_verifEmail) == 0)//Se a query retornar informações, conta quantas linhas foram, se for mais de 0 linhas, não permita criar certificado novamente.
+            {
+                // has
+                $autenticacao = md5($request->email.$request->cpf); // cria o has com as informações (cpf + email -> São duas infos que não se repetem) do aluno/pessoa que assistiu a palestra.
+
+                // insere no banco
+                $data = DateTime::createFromFormat('!d/m/Y H:i', $request->data)->format('Y-m-d H:i:s'); //forma a data 
+                $pdo = PDOConnection::Connect(); //conecta com o banco de dados
+                $query = "INSERT INTO certificados (aluno, email, telefone, curso, palestra, palestrante, universidade, data, autenticacao, cpf ,MODE,modelocert) VALUES (:aluno, :email, :telefone, :curso, :palestra, :palestrante, :universidade, :data, :autenticacao, :cpf)";
+                $stmt = $pdo->prepare($query); //prepara a query
+                $stmt->bindValue(":aluno", $request->aluno); //passa o valor aluno
+                $stmt->bindValue(":email", $request->email); //passa o valor email
+                $stmt->bindValue(":telefone", $request->telefone); //passa o valor telefone
+                $stmt->bindValue(":curso", $request->curso); //passa o valor curso
+                $stmt->bindValue(":palestra", $request->palestra); //passa o valor palestra
+                $stmt->bindValue(":palestrante", $request->palestrante); //passa o valor palestrante
+                $stmt->bindValue(":universidade", $request->universidade); //passa o valor universidade
+                $stmt->bindValue(":data", $data); //passa o valor data
+                $stmt->bindValue(":autenticacao", $autenticacao); // envia o has probanco
+                $stmt->bindValue(":cpf", $request->cpf);
+                $stmt->bindValue("modelocert, $request->modelocert");
+                $result = $stmt->execute(); //executa a query
+                $stmt->closeCursor(); //fecha o cursor
+                return $result; //retorna se cadastrou ou não , caso ele não retorna é nulo
+            }        
+        }
+                  return null;
+    }
+
+
+
+    public static function listarCertificados() 
+    {
+        $pdo = PDOConnection::Connect(); //conecta
+        $sql = "SELECT * FROM certificados"; 
+        $query =  $pdo->prepare($sql); //prepara 
+        $query->execute(); //executa
+        $result = $query->fetchAll(); //pega todo os certificados em forma de objeto
+        $query->closeCursor(); // fecha o cursor
+        return $result; //retorna todo os resultados
+    }
+
+    public static function buscarCertificados($aluno) //busca o certificado pelo nome do aluno 
+    {
+        if ($aluno) 
+        {
+            $pdo = PDOConnection::Connect(); // conecta
+            $query = "SELECT * FROM certificados WHERE aluno LIKE :aluno"; 
+            $stmt =  $pdo->prepare($query); //prepara a query
+            $stmt->bindValue(":aluno", '%'.$aluno.'%'); //insere o nome do aluno
+            $stmt->execute(); //executa
+            $result = $stmt->fetchAll(); //pega todo os resultados
+            $stmt->closeCursor(); //fecha o cursor
+            return $result; //retorna todo os resultados
+        }
+        return null;
+    }
+
+    public static function obterCertificado($id)
+    {
+        if ($id) //verifica se preencheu o id do certificado
+        {
+            $pdo = PDOConnection::Connect(); //conecta
+            $query = "SELECT * FROM certificados WHERE id=:id";
+            $stmt = $pdo->prepare($query); //prepara a query
+            $stmt->bindValue(":id", $id); //seta o id do certificado
+            $stmt->execute(); //executa
+            $result = $stmt->fetch(); //pega apenas um certificado
+            $stmt->closeCursor(); //fecha o cursor
+            return $result; //retorna o resultado
+        }
+        return null;
+    }
+
+    public static function deletarCertificado($id)
+    {
+        if ($id)  //verifica se preencheu o id do certificado
+        {
+            $pdo = PDOConnection::Connect(); //conecta
+            $query = "DELETE FROM certificados WHERE id=:id";
+            $stmt = $pdo->prepare($query); //prepara a query
+            $stmt->bindValue(":id", $id); //seta o id do certificado
+            $result = $stmt->execute(); //executa a exclusão do certificado
+            $stmt->closeCursor(); //fecha o cursor
+            return $result; //retorna o resultado
+        }
+        return null;
+    }
+}
