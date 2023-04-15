@@ -1,0 +1,129 @@
+
+-------------------------------------------------
+CREATE TABLE palestrantes (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   nome VARCHAR(255)
+);
+
+-------------------------------------------------
+
+CREATE TABLE palestras (
+   id INT NOT NULL AUTO_INCREMENT,
+   palestra VARCHAR(255) NOT NULL,
+   palestrante VARCHAR(255) NOT NULL,
+   data_conclusao DATETIME NOT NULL,
+   PRIMARY KEY (id)
+);
+
+-------------------------------------------------
+
+CREATE TABLE certificados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_certificado VARCHAR(50) NOT NULL,
+    data_conclusao DATETIME NOT NULL,
+    palestra VARCHAR(255) NOT NULL,
+    palestrante VARCHAR(255) NOT NULL
+);
+
+-------------------------------------------------
+
+CREATE TABLE certificado (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  aluno VARCHAR(255) NOT NULL,
+  cpf VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20) NOT NULL,
+  curso VARCHAR(255) NOT NULL,
+  universidade VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-------------------------------------------------
+
+CREATE TABLE alunos (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(255) NOT NULL,
+  cpf VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20) NOT NULL,
+  curso VARCHAR(255) NOT NULL,
+  universidade VARCHAR(255) NOT NULL
+);
+
+-------------------------------------------------
+
+
+
+
+ - Tabelas com chaves primárias e estrangeiras, você pode fazer as seguintes alterações nas tabelas:
+
+Na tabela "palestras", adicione uma coluna "id_palestrante" como chave estrangeira referenciando a tabela "palestrantes" na coluna "id".
+Na tabela "certificados", remova as colunas "palestra" e "palestrante" e adicione duas colunas "id_palestra" e "id_palestrante" como chaves
+estrangeiras referenciando as tabelas "palestras" e "palestrantes", respectivamente.Na tabela "certificado", remova a coluna "aluno" e adicione 
+uma coluna "id_aluno" como chave estrangeira referenciando a tabela "alunos" na coluna "id".Aqui está o código SQL atualizado para criar as 
+tabelas com as chaves primárias e estrangeiras:
+
+
+CREATE TABLE palestrantes (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   nome VARCHAR(255)
+);
+
+CREATE TABLE palestras (
+   id INT NOT NULL AUTO_INCREMENT,
+   palestra VARCHAR(255) NOT NULL,
+   data_conclusao DATETIME NOT NULL,
+   id_palestrante INT NOT NULL,
+   PRIMARY KEY (id),
+   FOREIGN KEY (id_palestrante) REFERENCES palestrantes(id)
+);
+
+CREATE TABLE certificados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_certificado VARCHAR(50) NOT NULL,
+    data_conclusao DATETIME NOT NULL,
+    id_palestra INT NOT NULL,
+    id_palestrante INT NOT NULL,
+    FOREIGN KEY (id_palestra) REFERENCES palestras(id),
+    FOREIGN KEY (id_palestrante) REFERENCES palestrantes(id)
+);
+
+CREATE TABLE alunos (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(255) NOT NULL,
+  cpf VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20) NOT NULL,
+  curso VARCHAR(255) NOT NULL,
+  universidade VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE certificado (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_aluno INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_aluno) REFERENCES alunos(id)
+);
+
+
+Note que agora as tabelas "palestras" e "certificados" têm colunas de chave estrangeira referenciando 
+a tabela "palestrantes", e a tabela "certificados"também tem colunas de chave estrangeira referenciando 
+as tabelas "palestras" e "palestrantes". E a tabela "certificado" tem uma coluna de chave estrangeira 
+referenciando a tabela "alunos".
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
